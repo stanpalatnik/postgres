@@ -6,9 +6,24 @@ if [ "${1:0:1}" = '-' ]; then
 fi
 
 if [ "$1" = 'postgres' ]; then
-	mkdir -p "$PGDATA"
-	chmod 700 "$PGDATA"
-	chown -R postgres "$PGDATA"
+
+	  echo "START: hack for IBM Container Volumes"
+      # Bluemix hack for using NFS based Volumes.  We have to do some special things
+      # here because 'root' in a volume isn't the same as 'root' in the container.
+      # This leads to problems like the container 'root' being unable to access
+      # a directory created by the postgres use.
+
+      # set things up so we can modify with `postgres` user
+      chmod 775 "$PGBASE"
+      adduser postgres root
+      eval "gosu postgres mkdir -p $PGDATA"
+      eval "gosu postgres chown -R postgres $PGDATA"
+      eval "gosu postgres chmod 700 $PGDATA"
+
+      # put things back to normal
+      deluser postgres root
+      chmod 755 "$PGBASE"
+      echo "END: hack for IBM Container Volumes"
 
 	chmod g+s /run/postgresql
 	chown -R postgres /run/postgresql

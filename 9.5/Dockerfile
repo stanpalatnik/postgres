@@ -48,7 +48,8 @@ RUN mv -v /usr/share/postgresql/$PG_MAJOR/postgresql.conf.sample /usr/share/post
 RUN mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
 
 ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
-ENV PGDATA /var/lib/postgresql/data
+ENV PGBASE /var/lib/postgresql/data
+ENV PGDATA /var/lib/postgresql/data/pgdata
 VOLUME /var/lib/postgresql/data
 
 COPY docker-entrypoint.sh /
