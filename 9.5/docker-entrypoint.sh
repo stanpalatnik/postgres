@@ -18,7 +18,7 @@ if [ "$1" = 'postgres' ]; then
       adduser postgres root
       eval "gosu postgres mkdir -p $PGDATA"
       eval "gosu postgres chown -R postgres $PGDATA"
-      eval "gosu postgres chmod 700 $PGDATA"
+      eval "gosu postgres chmod 777 $PGDATA"
 
       # put things back to normal
       deluser postgres root
@@ -108,6 +108,7 @@ if [ "$1" = 'postgres' ]; then
 		echo
 	fi
 
+	eval "gosu postgres chmod 700 $PGDATA"
 	exec gosu postgres "$@"
 fi
 
